@@ -100,6 +100,10 @@ public class VideoSampleActivity extends FragmentActivity {
       @Override public void onClosedToRight() {
         pauseVideo();
       }
+
+      @Override public void onTopViewSlide(float scroll) {
+
+      }
     });
   }
 

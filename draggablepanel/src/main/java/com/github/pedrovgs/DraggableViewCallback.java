@@ -15,6 +15,7 @@
  */
 package com.github.pedrovgs;
 
+import android.os.Debug;
 import android.support.v4.widget.ViewDragHelper;
 import android.view.View;
 
@@ -31,6 +32,10 @@ class DraggableViewCallback extends ViewDragHelper.Callback {
   private static final float X_MIN_VELOCITY = 1500;
   private static final float Y_MIN_VELOCITY = 1000;
 
+  private boolean listenerEnabled;
+  private int verticalDragRange = 0;
+
+  private DraggableListener draggableListener;
   private DraggableView draggableView;
   private View draggedView;
 
@@ -39,9 +44,22 @@ class DraggableViewCallback extends ViewDragHelper.Callback {
    *
    * @param draggableView instance used to apply some animations or visual effects.
    */
-  public DraggableViewCallback(DraggableView draggableView, View draggedView) {
+  public DraggableViewCallback(DraggableView draggableView, View draggedView, DraggableListener draggableListener) {
     this.draggableView = draggableView;
     this.draggedView = draggedView;
+    this.draggableListener = draggableListener;
+  }
+
+  public void setListenerEnabled(boolean listenerEnabled) {
+    this.listenerEnabled = listenerEnabled;
+  }
+
+  public void setVerticalDragRange(int verticalDragRange) {
+    this.verticalDragRange = verticalDragRange;
+  }
+
+  private int getVerticalDragRange() {
+    return verticalDragRange;
   }
 
   /**
@@ -64,6 +82,16 @@ class DraggableViewCallback extends ViewDragHelper.Callback {
       draggableView.changeSecondViewPosition();
       draggableView.changeBackgroundAlpha();
     }
+
+    if(listenerEnabled) {
+      float fractionScreen = (float) Math.abs(top) / (float) getVerticalDragRange();
+      if (fractionScreen >= 1) {
+        fractionScreen = 1;
+      }
+      if (draggableListener != null) {
+        draggableListener.onTopViewSlide(fractionScreen);
+      }
+    }
   }
 
   /**
@@ -77,7 +105,6 @@ class DraggableViewCallback extends ViewDragHelper.Callback {
    */
   @Override public void onViewReleased(View releasedChild, float xVel, float yVel) {
     super.onViewReleased(releasedChild, xVel, yVel);
-
     if (draggableView.isDragViewAtBottom() && !draggableView.isDragViewAtRight()) {
       triggerOnReleaseActionsWhileHorizontalDrag(xVel);
     } else {

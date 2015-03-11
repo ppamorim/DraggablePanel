@@ -34,10 +34,18 @@ import com.nineoldandroids.view.ViewHelper;
  */
 public abstract class Transformer {
 
+  public static final float DEFAULT_DRAG_LIMIT = 0.5f;
+
+  public static final int LEFT = 0;
+  public static final int CENTER = 1;
+  public static final int RIGHT = 2;
+
   private final View view;
   private final View parent;
 
+  private int marginLeft;
   private int marginRight;
+  private int marginTop;
   private int marginBottom;
 
   private float xScaleFactor;
@@ -46,9 +54,20 @@ public abstract class Transformer {
   private int originalHeight;
   private int originalWidth;
 
+  private int position;
+  private float dragLimit;
+
   public Transformer(View view, View parent) {
     this.view = view;
     this.parent = parent;
+  }
+
+  public int getViewPosition() {
+    return position;
+  }
+
+  public void setViewPosition(int position) {
+    this.position = position;
   }
 
   public float getXScaleFactor() {
@@ -67,6 +86,14 @@ public abstract class Transformer {
     this.yScaleFactor = yScaleFactor;
   }
 
+  public int getMarginLeft() {
+    return marginLeft;
+  }
+
+  public void setMarginLeft(int marginLeft) {
+    this.marginLeft = Math.round(marginLeft);
+  }
+
   public int getMarginRight() {
     return marginRight;
   }
@@ -75,12 +102,28 @@ public abstract class Transformer {
     this.marginRight = Math.round(marginRight);
   }
 
+  public int getMarginTop() {
+    return marginTop;
+  }
+
+  public void setMarginTop(int marginTop) {
+    this.marginTop = Math.round(marginTop);
+  }
+
   public int getMarginBottom() {
     return marginBottom;
   }
 
   public void setMarginBottom(int marginBottom) {
     this.marginBottom = Math.round(marginBottom);
+  }
+
+  public float getDragLimit() {
+    return dragLimit;
+  }
+
+  public void setDragLimit(float dragLimit) {
+    this.dragLimit = dragLimit;
   }
 
   /**
@@ -136,9 +179,11 @@ public abstract class Transformer {
 
   public boolean isAboveTheMiddle() {
     int parentHeight = parent.getHeight();
-    float viewYPosition = ViewHelper.getY(view) + (view.getHeight() * 0.5f);
-    return viewYPosition < (parentHeight * 0.5);
+    float viewYPosition = ViewHelper.getY(view) + (view.getHeight() * getDragLimit());
+    return viewYPosition < (parentHeight * getDragLimit());
   }
+
+  public abstract boolean isViewAtLeft();
 
   public abstract boolean isViewAtRight();
 
@@ -149,12 +194,12 @@ public abstract class Transformer {
   public abstract boolean isNextToLeftBound();
 
   /**
-   * @return min possible height, after apply the transformation, plus the margin right.
+   * @return min possible height, after apply the transformation, plus the margin right and left.
    */
-  public abstract int getMinHeightPlusMargin();
+  public abstract int getMinHeightPlusVerticalSides();
 
   /**
-   * @return min possible width, after apply the transformation.
+   * @return min possible width, after apply the transformation, plus the margin top and bottom.
    */
-  public abstract int getMinWidthPlusMarginRight();
+  public abstract int getMinWidthPlusMarginHorizontalSides();
 }
