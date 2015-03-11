@@ -216,6 +216,11 @@ public class DraggablePanel extends FrameLayout {
     this.yScaleFactor = yScaleFactor;
   }
 
+  /**
+   * Configure all margins of the dragView and are applied when the dragView is minimized.
+   *
+   * @param topFragmentMargin in pixels.
+   */
   public void setTopFragmentMargin(int topFragmentMargin) {
     this.topFragmentMargin = topFragmentMargin;
   }

@@ -14,7 +14,6 @@
     <attr name="enable_click_to_minimize_panel" format="boolean"/>
     <attr name="enable_touch_listener_panel" format="boolean"/>
     <attr name="drag_limit_panel" format="float"/>
-    <attr name="side_panel" format="integer"/>
   </declare-styleable>
 
   <declare-styleable name="draggable_view">
@@ -33,7 +32,6 @@
     <attr name="enable_click_to_minimize_view" format="boolean"/>
     <attr name="top_view_resize" format="boolean"/>
     <attr name="drag_limit_view" format="float"/>
-    <attr name="side_view" format="integer"/>
   </declare-styleable>
 
   <declare-styleable name="top_view_position">

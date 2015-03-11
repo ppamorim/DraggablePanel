@@ -180,6 +180,11 @@ public class DraggableView extends RelativeLayout {
     transformer.setYScaleFactor(yScaleFactor);
   }
 
+  /**
+   * Configure all margins of the dragView and are applied when the dragView is minimized.
+   *
+   * @param topViewMargin in pixels.
+   */
   public void setTopViewMargin(int topViewMargin) {
     transformer.setMargins(topViewMargin);
   }
