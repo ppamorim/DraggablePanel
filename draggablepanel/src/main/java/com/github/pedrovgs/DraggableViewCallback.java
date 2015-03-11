@@ -15,7 +15,6 @@
  */
 package com.github.pedrovgs;
 
-import android.os.Debug;
 import android.support.v4.widget.ViewDragHelper;
 import android.view.View;
 
@@ -83,7 +82,7 @@ class DraggableViewCallback extends ViewDragHelper.Callback {
       draggableView.changeBackgroundAlpha();
     }
 
-    if(listenerEnabled) {
+    if (listenerEnabled) {
       float fractionScreen = (float) Math.abs(top) / (float) getVerticalDragRange();
       if (fractionScreen >= 1) {
         fractionScreen = 1;

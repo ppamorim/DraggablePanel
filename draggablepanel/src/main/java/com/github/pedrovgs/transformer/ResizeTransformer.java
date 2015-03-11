@@ -69,12 +69,9 @@ class ResizeTransformer extends Transformer {
         left = right;
         break;
       case Transformer.RIGHT:
+      default:
         right = getViewRightPosition(verticalDragOffset);
         left = right - layoutParams.width;
-        break;
-      default:
-        right = 0;
-        left = 0;
         break;
     }
 

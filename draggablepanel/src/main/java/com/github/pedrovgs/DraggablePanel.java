@@ -373,7 +373,8 @@ public class DraggablePanel extends FrameLayout {
    */
   private void initializeAttrs(AttributeSet attrs) {
     TypedArray attributes = getContext().obtainStyledAttributes(attrs, R.styleable.draggable_panel);
-    setDragViewPosition(getContext().obtainStyledAttributes(attrs, R.styleable.top_view_position).getInt(R.styleable.top_view_position_position,
+    setDragViewPosition(getContext().obtainStyledAttributes(attrs, R.styleable.top_view_position)
+        .getInt(R.styleable.top_view_position_position,
         Transformer.RIGHT));
     setTopFragmentHeight(attributes.getDimensionPixelSize(R.styleable.draggable_panel_top_fragment_height,
         DEFAULT_TOP_FRAGMENT_HEIGHT));

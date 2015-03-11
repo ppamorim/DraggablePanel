@@ -707,7 +707,8 @@ public class DraggableView extends RelativeLayout {
   private void initializeAttributes(AttributeSet attrs) {
     TypedArray attributes = getContext().obtainStyledAttributes(attrs, R.styleable.draggable_view);
     attributePosition = getContext().obtainStyledAttributes(attrs, R.styleable.top_view_position);
-    setHorizontalAlphaEffectEnabled(attributes.getBoolean(R.styleable.draggable_view_enable_minimized_horizontal_alpha_effect,
+    setHorizontalAlphaEffectEnabled(attributes.getBoolean(
+        R.styleable.draggable_view_enable_minimized_horizontal_alpha_effect,
         DEFAULT_ENABLE_HORIZONTAL_ALPHA_EFFECT));
     setClickToMaximizeEnabled(attributes.getBoolean(R.styleable.draggable_view_enable_click_to_maximize_view,
         DEFAULT_ENABLE_CLICK_TO_MAXIMIZE));
