@@ -51,6 +51,7 @@ public class DraggablePanel extends FrameLayout {
   private Fragment topFragment;
   private Fragment bottomFragment;
   private int topFragmentHeight;
+  private int topFragmentMargin;
   private int topFragmentMarginTop;
   private int topFragmentMarginBottom;
   private int topFragmentMarginLeft;
@@ -215,6 +216,10 @@ public class DraggablePanel extends FrameLayout {
     this.yScaleFactor = yScaleFactor;
   }
 
+  public void setTopFragmentMargin(int topFragmentMargin) {
+    this.topFragmentMargin = topFragmentMargin;
+  }
+
   /**
    * Configure the top Fragment margin top applied when the view has been minimized.
    *
@@ -316,6 +321,7 @@ public class DraggablePanel extends FrameLayout {
     draggableView.attachTopFragment(topFragment);
     draggableView.setXTopViewScaleFactor(xScaleFactor);
     draggableView.setYTopViewScaleFactor(yScaleFactor);
+    draggableView.setTopViewMargin(topFragmentMargin);
     draggableView.setTopViewMarginTop(topFragmentMarginTop);
     draggableView.setTopViewMarginLeft(topFragmentMarginLeft);
     draggableView.setTopViewMarginBottom(topFragmentMarginBottom);
@@ -382,6 +388,8 @@ public class DraggablePanel extends FrameLayout {
         DEFAULT_SCALE_FACTOR));
     setYScaleFactor(attributes.getFloat(R.styleable.draggable_panel_y_scale_factor,
         DEFAULT_SCALE_FACTOR));
+    setTopFragmentMargin(attributes.getDimensionPixelSize(R.styleable.draggable_panel_top_fragment_margin,
+        DEFAULT_TOP_FRAGMENT_MARGIN));
     setTopFragmentMarginTop(attributes.getDimensionPixelSize(R.styleable.draggable_panel_top_fragment_margin_top,
         DEFAULT_TOP_FRAGMENT_MARGIN));
     setTopFragmentMarginBottom(attributes.getDimensionPixelSize(R.styleable.draggable_panel_top_fragment_margin_bottom,

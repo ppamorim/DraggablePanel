@@ -86,6 +86,14 @@ public abstract class Transformer {
     this.yScaleFactor = yScaleFactor;
   }
 
+  public void setMargins(int margins) {
+    margins = Math.round(margins);
+    this.marginLeft = margins;
+    this.marginRight = margins;
+    this.marginTop = margins;
+    this.marginBottom = margins;
+  }
+
   public int getMarginLeft() {
     return marginLeft;
   }

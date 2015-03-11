@@ -180,6 +180,10 @@ public class DraggableView extends RelativeLayout {
     transformer.setYScaleFactor(yScaleFactor);
   }
 
+  public void setTopViewMargin(int topViewMargin) {
+    transformer.setMargins(topViewMargin);
+  }
+
   /**
    * Configure the dragView margin left applied when the dragView is minimized.
    *
@@ -686,6 +690,8 @@ public class DraggableView extends RelativeLayout {
         DEFAULT_SCALE_FACTOR));
     setYTopViewScaleFactor(attributes.getFloat(R.styleable.draggable_view_top_view_y_scale_factor,
         DEFAULT_SCALE_FACTOR));
+    setTopViewMargin(attributes.getDimensionPixelOffset(R.styleable.draggable_view_top_view_margin,
+        DEFAULT_TOP_VIEW_MARGIN));
     setTopViewMarginTop(attributes.getDimensionPixelSize(R.styleable.draggable_view_top_view_margin_top,
         DEFAULT_TOP_VIEW_MARGIN));
     setTopViewMarginBottom(attributes.getDimensionPixelSize(R.styleable.draggable_view_top_view_margin_bottom,

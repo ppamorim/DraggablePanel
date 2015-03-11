@@ -30,9 +30,6 @@
       draggable_view:top_view_margin_bottom="@dimen/top_fragment_margin"
       draggable_view:top_view_margin_left="@dimen/top_fragment_margin"
       draggable_view:top_view_margin_right="@dimen/top_fragment_margin"
-      draggable_view:drag_limit_view="0.5"
-      draggable_view:position="right"
-      draggable_view:top_view_resize="true"
       android:background="@color/black">
 
     <!-- ListView Episodes -->

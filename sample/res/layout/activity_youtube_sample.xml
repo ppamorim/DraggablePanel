@@ -27,9 +27,6 @@
       draggable_panel:top_fragment_margin_bottom="@dimen/top_fragment_margin"
       draggable_panel:top_fragment_margin_left="@dimen/top_fragment_margin"
       draggable_panel:top_fragment_margin_right="@dimen/top_fragment_margin"
-      draggable_panel:enable_horizontal_alpha_effect="false"
-      draggable_panel:position="center"
-      draggable_panel:top_view_resize="true"
-      draggable_panel:drag_limit_panel="0.9"/>
+      draggable_panel:enable_horizontal_alpha_effect="false"/>
 
 </FrameLayout>

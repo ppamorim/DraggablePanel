@@ -4,6 +4,7 @@
     <attr name="top_fragment_height" format="dimension"/>
     <attr name="x_scale_factor" format="float"/>
     <attr name="y_scale_factor" format="float"/>
+    <attr name="top_fragment_margin" format="dimension"/>
     <attr name="top_fragment_margin_top" format="dimension"/>
     <attr name="top_fragment_margin_bottom" format="dimension"/>
     <attr name="top_fragment_margin_left" format="dimension"/>
@@ -22,6 +23,7 @@
     <attr name="top_view_height" format="dimension"/>
     <attr name="top_view_x_scale_factor" format="float"/>
     <attr name="top_view_y_scale_factor" format="float"/>
+    <attr name="top_view_margin" format="dimension"/>
     <attr name="top_view_margin_top" format="dimension"/>
     <attr name="top_view_margin_bottom" format="dimension"/>
     <attr name="top_view_margin_left" format="dimension"/>
