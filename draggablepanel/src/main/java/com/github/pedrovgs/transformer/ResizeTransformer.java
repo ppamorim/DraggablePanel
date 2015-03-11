@@ -65,7 +65,7 @@ class ResizeTransformer extends Transformer {
         right = layoutParams.width;
         break;
       case Transformer.CENTER:
-        right = layoutParams.width/2;
+        right = layoutParams.width / 2;
         left = right;
         break;
       case Transformer.RIGHT:
