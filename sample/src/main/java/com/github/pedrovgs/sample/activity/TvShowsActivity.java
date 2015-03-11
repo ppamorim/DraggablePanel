@@ -35,7 +35,6 @@ import com.github.pedrovgs.sample.renderer.EpisodeRendererAdapter;
 import com.github.pedrovgs.sample.renderer.rendererbuilder.EpisodeRendererBuilder;
 import com.github.pedrovgs.sample.viewmodel.EpisodeViewModel;
 import com.github.pedrovgs.sample.viewmodel.TvShowViewModel;
-import com.github.pedrovgs.transformer.Transformer;
 import com.pedrogomez.renderers.Renderer;
 import com.pedrogomez.renderers.RendererAdapter;
 import com.squareup.picasso.Picasso;
