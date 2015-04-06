@@ -84,7 +84,7 @@ class DraggableViewCallback extends ViewDragHelper.Callback {
       if (fractionScreen >= 1) {
         fractionScreen = 1;
       }
-      if(fractionScreen >= 0.0) {
+      if (fractionScreen >= 0.0) {
         draggableListener.onTopViewSlide(fractionScreen);
       }
     }
