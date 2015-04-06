@@ -21,6 +21,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.util.AttributeSet;
 import android.widget.FrameLayout;
+import com.github.pedrovgs.transformer.Position;
 import com.github.pedrovgs.transformer.Transformer;
 
 /**
@@ -383,9 +384,6 @@ public class DraggablePanel extends FrameLayout {
    */
   private void initializeAttrs(AttributeSet attrs) {
     TypedArray attributes = getContext().obtainStyledAttributes(attrs, R.styleable.draggable_panel);
-    setDragViewPosition(getContext().obtainStyledAttributes(attrs, R.styleable.top_view_position)
-        .getInt(R.styleable.top_view_position_position,
-        Transformer.RIGHT));
     setTopFragmentHeight(attributes.getDimensionPixelSize(R.styleable.draggable_panel_top_fragment_height,
         DEFAULT_TOP_FRAGMENT_HEIGHT));
     setXScaleFactor(attributes.getFloat(R.styleable.draggable_panel_x_scale_factor,
@@ -412,6 +410,9 @@ public class DraggablePanel extends FrameLayout {
         DEFAULT_ENABLE_TOUCH_LISTENER));
     setDragLimit(attributes.getFloat(R.styleable.draggable_panel_drag_limit_panel,
         Transformer.DEFAULT_DRAG_LIMIT));
+    setDragViewPosition(getContext().obtainStyledAttributes(attrs, R.styleable.top_view_position)
+        .getInt(R.styleable.top_view_position_position,
+            Position.RIGHT));
     attributes.recycle();
   }
 

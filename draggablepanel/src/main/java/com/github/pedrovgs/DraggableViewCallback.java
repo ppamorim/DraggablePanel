@@ -31,7 +31,6 @@ class DraggableViewCallback extends ViewDragHelper.Callback {
   private static final float X_MIN_VELOCITY = 1500;
   private static final float Y_MIN_VELOCITY = 1000;
 
-  private boolean listenerEnabled;
   private int verticalDragRange = 0;
 
   private DraggableListener draggableListener;
@@ -43,18 +42,16 @@ class DraggableViewCallback extends ViewDragHelper.Callback {
    *
    * @param draggableView instance used to apply some animations or visual effects.
    */
-  public DraggableViewCallback(DraggableView draggableView, View draggedView, DraggableListener draggableListener) {
+  public DraggableViewCallback(DraggableView draggableView, View draggedView,
+      DraggableListener draggableListener, int height) {
     this.draggableView = draggableView;
     this.draggedView = draggedView;
     this.draggableListener = draggableListener;
+    this.verticalDragRange = height;
   }
 
-  public void setListenerEnabled(boolean listenerEnabled) {
-    this.listenerEnabled = listenerEnabled;
-  }
-
-  public void setVerticalDragRange(int verticalDragRange) {
-    this.verticalDragRange = verticalDragRange;
+  public void setDraggableListener(DraggableListener draggableListener) {
+    this.draggableListener = draggableListener;
   }
 
   private int getVerticalDragRange() {
@@ -82,12 +79,12 @@ class DraggableViewCallback extends ViewDragHelper.Callback {
       draggableView.changeBackgroundAlpha();
     }
 
-    if (listenerEnabled) {
-      float fractionScreen = (float) Math.abs(top) / (float) getVerticalDragRange();
+    if (draggableListener != null) {
+      float fractionScreen = (float) Math.abs(top) / (float) verticalDragRange;
       if (fractionScreen >= 1) {
         fractionScreen = 1;
       }
-      if (draggableListener != null) {
+      if(fractionScreen >= 0.0) {
         draggableListener.onTopViewSlide(fractionScreen);
       }
     }

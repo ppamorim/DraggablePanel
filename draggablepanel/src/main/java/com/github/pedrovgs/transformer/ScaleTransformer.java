@@ -104,11 +104,11 @@ class ScaleTransformer extends Transformer {
 
   private float generateHorizontalPivot() {
     switch (getViewPosition()) {
-      case Transformer.LEFT:
+      case Position.LEFT:
         return getMarginLeft();
-      case Transformer.CENTER:
+      case Position.CENTER:
         return getView().getWidth() / 2;
-      case Transformer.RIGHT:
+      case Position.RIGHT:
       default:
         return getView().getWidth() - getMarginRight();
     }

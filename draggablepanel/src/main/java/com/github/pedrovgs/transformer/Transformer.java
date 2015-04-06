@@ -36,10 +36,6 @@ public abstract class Transformer {
 
   public static final float DEFAULT_DRAG_LIMIT = 0.5f;
 
-  public static final int LEFT = 0;
-  public static final int CENTER = 1;
-  public static final int RIGHT = 2;
-
   private final View view;
   private final View parent;
 

@@ -70,9 +70,10 @@ public class TvShowsActivity extends DIFragmentActivity {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_tv_shows_sample);
     ButterKnife.inject(this);
+    hookListeners();
     initializeDraggableView();
     initializeGridView();
-    hookListeners();
+
   }
 
   /**

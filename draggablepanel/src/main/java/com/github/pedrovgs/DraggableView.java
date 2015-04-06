@@ -27,6 +27,7 @@ import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.RelativeLayout;
+import com.github.pedrovgs.transformer.Position;
 import com.github.pedrovgs.transformer.Transformer;
 import com.github.pedrovgs.transformer.TransformerFactory;
 import com.nineoldandroids.view.ViewHelper;
@@ -63,6 +64,7 @@ public class DraggableView extends RelativeLayout {
 
   private FragmentManager fragmentManager;
   private ViewDragHelper viewDragHelper;
+  private DraggableViewCallback draggableViewCallback;
   private Transformer transformer;
 
   private boolean enableHorizontalAlphaEffect;
@@ -256,10 +258,11 @@ public class DraggableView extends RelativeLayout {
 
   /**
    * Configure the DraggableListener notified when the view is minimized, maximized, closed to the
-   * right or closed to the left.
+   * right or closed to the left and the actual position on Y axis.
    */
   public void setDraggableListener(DraggableListener listener) {
     this.listener = listener;
+    draggableViewCallback.setDraggableListener(listener);
   }
 
   /**
@@ -673,7 +676,9 @@ public class DraggableView extends RelativeLayout {
    * Initialize the viewDragHelper.
    */
   private void initializeViewDragHelper() {
-    viewDragHelper = ViewDragHelper.create(this, SENSITIVITY, new DraggableViewCallback(this, dragView, listener));
+    draggableViewCallback = new DraggableViewCallback(this, dragView, listener,
+        (int) getVerticalDragRange());
+    viewDragHelper = ViewDragHelper.create(this, SENSITIVITY, draggableViewCallback);
   }
 
   /**
@@ -684,8 +689,6 @@ public class DraggableView extends RelativeLayout {
         attributes.getBoolean(R.styleable.draggable_view_top_view_resize, DEFAULT_TOP_VIEW_RESIZE);
     TransformerFactory transformerFactory = new TransformerFactory();
     transformer = transformerFactory.getTransformer(topViewResize, dragView, this);
-    setDragViewPosition(attributePosition.getInt(R.styleable.top_view_position_position,
-        Transformer.RIGHT));
     setTopViewHeight(attributes.getDimensionPixelSize(R.styleable.draggable_view_top_view_height,
         DEFAULT_TOP_VIEW_HEIGHT));
     setXTopViewScaleFactor(attributes.getFloat(R.styleable.draggable_view_top_view_x_scale_factor,
@@ -704,6 +707,8 @@ public class DraggableView extends RelativeLayout {
             DEFAULT_TOP_VIEW_MARGIN));
     setDragLimit(attributes.getFloat(R.styleable.draggable_view_drag_limit_view,
         Transformer.DEFAULT_DRAG_LIMIT));
+    setDragViewPosition(attributePosition.getInt(R.styleable.top_view_position_position,
+        Position.RIGHT));
     attributes.recycle();
   }
 
