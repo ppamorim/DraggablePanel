@@ -123,7 +123,7 @@ public class YoutubeSampleActivity extends FragmentActivity {
         playVideo();
       }
 
-      @Override public void onMinimized() {}
+      @Override public void onMinimized() { }
 
       @Override public void onClosedToLeft() {
         pauseVideo();
@@ -133,9 +133,7 @@ public class YoutubeSampleActivity extends FragmentActivity {
         pauseVideo();
       }
 
-      @Override public void onTopViewSlide(float scroll) {
-        System.out.println("scroll: " + scroll);
-      }
+      @Override public void onTopViewSlide(float scroll) { }
     });
   }
 
