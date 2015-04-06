@@ -49,8 +49,6 @@ public class DraggableView extends RelativeLayout {
   private static final boolean DEFAULT_ENABLE_HORIZONTAL_ALPHA_EFFECT = true;
   private static final boolean DEFAULT_ENABLE_CLICK_TO_MAXIMIZE = false;
   private static final boolean DEFAULT_ENABLE_CLICK_TO_MINIMIZE = false;
-  private static final boolean DEFAULT_ENABLE_TOUCH_LISTENER = true;
-  private static final int DEFAULT_POSITION = 0;
   private static final int MIN_SLIDING_DISTANCE_ON_CLICK = 10;
   private static final int ONE_HUNDRED = 100;
   private static final float SENSITIVITY = 1f;
@@ -72,7 +70,6 @@ public class DraggableView extends RelativeLayout {
   private boolean enableClickToMaximize;
   private boolean enableClickToMinimize;
   private boolean touchEnabled;
-  private int position;
 
   private DraggableListener listener;
 
@@ -717,7 +714,6 @@ public class DraggableView extends RelativeLayout {
    */
   private void initializeAttributes(AttributeSet attrs) {
     TypedArray attributes = getContext().obtainStyledAttributes(attrs, R.styleable.draggable_view);
-    attributePosition = getContext().obtainStyledAttributes(attrs, R.styleable.top_view_position);
     setHorizontalAlphaEffectEnabled(attributes.getBoolean(
         R.styleable.draggable_view_enable_minimized_horizontal_alpha_effect,
         DEFAULT_ENABLE_HORIZONTAL_ALPHA_EFFECT));
@@ -725,6 +721,7 @@ public class DraggableView extends RelativeLayout {
         DEFAULT_ENABLE_CLICK_TO_MAXIMIZE));
     setClickToMinimizeEnabled(attributes.getBoolean(R.styleable.draggable_view_enable_click_to_minimize_view,
         DEFAULT_ENABLE_CLICK_TO_MINIMIZE));
+    this.attributePosition = getContext().obtainStyledAttributes(attrs, R.styleable.top_view_position);
     this.attributes = attributes;
   }
 
