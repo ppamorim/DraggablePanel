@@ -243,6 +243,20 @@ public class DraggablePanel extends FrameLayout {
   }
 
   /**
+   * Toggle the view to fullScreen sliding the bottom view, rotate the top and scale
+   */
+  public void toggleFullScreen() {
+    draggableView.toggleFullScreen();
+  }
+
+  /**
+   * @return Check if current value of both springs are equals 1
+   */
+  public boolean isFullScreen() {
+    return draggableView.isFullScreen();
+  }
+
+  /**
    * Apply all the custom view configuration and inflate the main widgets. The view won't be
    * visible if this method is not called.
    * <p/>

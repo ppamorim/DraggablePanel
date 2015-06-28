@@ -277,17 +277,11 @@ public class DraggableView extends RelativeLayout {
   public void toggleFullScreen() {
     if(isMaximized() && !zoomAnimationRunning) {
       zoomAnimationRunning = true;
-      toggleDragViewZoom();
-    }
-  }
-
-  private void toggleDragViewZoom() {
-    dragView.setClickable(true);
-    dragView.setFocusable(true);
-    if (!isFullScreen()) {
-      fullScreenSpring().setEndValue(1);
-    } else {
-      fullScreenSpring().setEndValue(0);
+      if (!isFullScreen()) {
+        fullScreenSpring().setEndValue(1);
+      } else {
+        fullScreenSpring().setEndValue(0);
+      }
     }
   }
 
@@ -448,12 +442,14 @@ public class DraggableView extends RelativeLayout {
         event.getY(), event.getMetaState());
   }
 
+  /**
+   * Return the width and height of the main view, it will be
+   * used to provide the side of fullScrenn mode
+   */
   @Override protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
     super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+    screenWidth = MeasureSpec.getSize(widthMeasureSpec);
     screenHeight = MeasureSpec.getSize(heightMeasureSpec);
-    if(screenWidth == 0) {
-      screenWidth = MeasureSpec.getSize(widthMeasureSpec);
-    }
   }
 
   /**
@@ -839,7 +835,7 @@ public class DraggableView extends RelativeLayout {
   private SimpleSpringListener fullScreenSpringListener = new SimpleSpringListener() {
     @Override public void onSpringUpdate(Spring spring) {
       super.onSpringUpdate(spring);
-      ViewCompat.setPivotX(dragView, dragView.getWidth() / 2);
+      ViewCompat.setPivotX(dragView, screenWidth / 2);
       ViewCompat.setScaleX(dragView,
           (float) SpringUtil.mapValueFromRangeToRange(spring.getCurrentValue(), 0, 1, 1, scaleX));
       ViewCompat.setScaleY(dragView,

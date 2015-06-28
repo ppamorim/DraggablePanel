@@ -253,14 +253,15 @@ public class PlacesSampleActivity extends DIFragmentActivity {
     PlaceViewModel placeViewModel = placesAdapter.getItem(position);
     placeFragment.showPlace(placeViewModel);
 
-    mapFragment.getMap().clear();
-    LatLng latitudeLongitude =
-        new LatLng(placeViewModel.getLatitude(), placeViewModel.getLongitude());
-    MarkerOptions marker = new MarkerOptions().position(latitudeLongitude);
-    marker.title(placeViewModel.getName());
-    marker.snippet(placeViewModel.getLatitude() + " , " + placeViewModel.getLongitude());
-    mapFragment.getMap().addMarker(marker);
-    mapFragment.getMap().moveCamera(CameraUpdateFactory.newLatLngZoom(latitudeLongitude, ZOOM));
+    if(mapFragment != null && mapFragment.getMap() != null) {
+      mapFragment.getMap().clear();
+      LatLng latitudeLongitude = new LatLng(placeViewModel.getLatitude(), placeViewModel.getLongitude());
+      MarkerOptions marker = new MarkerOptions().position(latitudeLongitude);
+      marker.title(placeViewModel.getName());
+      marker.snippet(placeViewModel.getLatitude() + " , " + placeViewModel.getLongitude());
+      mapFragment.getMap().addMarker(marker);
+      mapFragment.getMap().moveCamera(CameraUpdateFactory.newLatLngZoom(latitudeLongitude, ZOOM));
+    }
   }
 
   /**
