@@ -27,9 +27,13 @@ import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.RelativeLayout;
+import com.facebook.rebound.SimpleSpringListener;
+import com.facebook.rebound.Spring;
+import com.facebook.rebound.SpringConfig;
+import com.facebook.rebound.SpringSystem;
+import com.facebook.rebound.SpringUtil;
 import com.github.pedrovgs.transformer.Transformer;
 import com.github.pedrovgs.transformer.TransformerFactory;
-import com.nineoldandroids.view.ViewHelper;
 
 /**
  * Class created to extends a ViewGroup and simulate the YoutubeLayoutComponent
@@ -52,6 +56,9 @@ public class DraggableView extends RelativeLayout {
   private static final int ONE_HUNDRED = 100;
   private static final float SENSITIVITY = 1f;
   private static final boolean DEFAULT_TOP_VIEW_RESIZE = false;
+  private static final int DEFAULT_TENSION = 40;
+  private static final int DEFAULT_FRICTION = 6;
+  private static final int DEFAULT_FULLSCREEN_DELAY = 200;
 
   private float lastTouchActionDownXPosition;
 
@@ -63,11 +70,26 @@ public class DraggableView extends RelativeLayout {
   private ViewDragHelper viewDragHelper;
   private Transformer transformer;
 
+  private Spring dragViewSpring;
+  private Spring secondViewSpring;
+  private Spring zoomSpring;
+
   private boolean enableHorizontalAlphaEffect;
   private boolean topViewResize;
   private boolean enableClickToMaximize;
   private boolean enableClickToMinimize;
   private boolean touchEnabled;
+  private boolean fullScreenAnimationRunning = false;
+
+  private int tension = DEFAULT_TENSION;
+  private int friction = DEFAULT_FRICTION;
+  private int screenHeight;
+  private int screenWidth;
+  private int dragViewHeight;
+  private int secondViewHeight;
+
+  private double scaleX;
+  private double scaleY;
 
   private DraggableListener listener;
 
@@ -156,7 +178,7 @@ public class DraggableView extends RelativeLayout {
       minimize();
     }
     setTouchEnabled(slideOffset <= MIN_SLIDE_OFFSET);
-    ViewHelper.setX(this, width - Math.abs(drawerPosition));
+    ViewCompat.setX(this, width - Math.abs(drawerPosition));
   }
 
   /**
@@ -247,6 +269,92 @@ public class DraggableView extends RelativeLayout {
   public void minimize() {
     smoothSlideTo(SLIDE_BOTTOM);
     notifyMinimizeToListener();
+  }
+
+  public void toggleFullScreen() {
+    toggleFullScreen(DEFAULT_FULLSCREEN_DELAY);
+  }
+
+  /**
+   * Toggle the view to fullScreen sliding the bottom view, rotate the top and scale
+   */
+  public void toggleFullScreen(final int delay) {
+    if (!fullScreenAnimationRunning) {
+      fullScreenAnimationRunning = true;
+
+      if (isFullScreen()) {
+
+        toggleDragViewZoom(-1);
+        dragView.postDelayed(new Runnable() {
+          @Override public void run() {
+            toggleDragViewToCenter();
+            dragView.postDelayed(new Runnable() {
+              @Override public void run() {
+                closeSecondView(delay);
+              }
+            }, delay);
+          }
+        }, delay);
+
+      } else {
+
+        closeSecondView(-1);
+        secondView.postDelayed(new Runnable() {
+          @Override public void run() {
+            toggleDragViewToCenter();
+            secondView.postDelayed(new Runnable() {
+              @Override public void run() {
+                toggleDragViewZoom(delay);
+              }
+            }, delay);
+          }
+        }, delay);
+      }
+    }
+  }
+
+  private void toggleDragViewToCenter() {
+    if (dragViewSpring().getCurrentValue() <= 0) {
+      dragViewSpring().setEndValue(1);
+    } else {
+      dragViewSpring().setEndValue(0);
+    }
+  }
+
+  private void closeSecondView(int delay) {
+    if (secondViewSpring().getCurrentValue() <= 0) {
+      secondViewSpring().setEndValue(1);
+    } else {
+      secondViewSpring().setEndValue(0);
+    }
+  }
+
+  private void toggleDragViewZoom(int delay) {
+    if (zoomSpring().getCurrentValue() <= 0) {
+      zoomSpring().setEndValue(1);
+    } else {
+      zoomSpring().setEndValue(0);
+    }
+    animationIsEnded(delay);
+  }
+
+  private void animationIsEnded(int delay) {
+    if(delay != -1) {
+      dragView.postDelayed(new Runnable() {
+        @Override public void run() {
+          fullScreenAnimationRunning = false;
+        }
+      }, delay);
+    }
+  }
+
+  /**
+   * @return Check if current value of both springs are equals 1
+   */
+  public boolean isFullScreen() {
+    return secondViewSpring().getCurrentValue() > 0
+        && dragViewSpring().getCurrentValue() > 0
+        && zoomSpring().getCurrentValue() > 0;
   }
 
   /**
@@ -344,7 +452,7 @@ public class DraggableView extends RelativeLayout {
    */
   @Override public boolean onTouchEvent(MotionEvent ev) {
     viewDragHelper.processTouchEvent(ev);
-    if (isClosed()) {
+    if (isClosed() || isFullScreen()) {
       return false;
     }
     boolean isDragViewHit = isViewHit(dragView, (int) ev.getX(), (int) ev.getY());
@@ -399,6 +507,12 @@ public class DraggableView extends RelativeLayout {
         event.getY(), event.getMetaState());
   }
 
+  @Override protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+    super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+    screenHeight = MeasureSpec.getSize(heightMeasureSpec);
+    screenWidth = MeasureSpec.getSize(widthMeasureSpec);
+  }
+
   /**
    * Override method to configure the dragged view and secondView layout properly.
    */
@@ -408,11 +522,16 @@ public class DraggableView extends RelativeLayout {
     else if (isDragViewAtTop()) {
       dragView.layout(left, top, right, transformer.getOriginalHeight());
       secondView.layout(left, transformer.getOriginalHeight(), right, bottom);
-      ViewHelper.setY(dragView, top);
-      ViewHelper.setY(secondView, transformer.getOriginalHeight());
+      ViewCompat.setY(dragView, top);
+      ViewCompat.setY(secondView, transformer.getOriginalHeight());
     } else {
       secondView.layout(left, transformer.getOriginalHeight(), right, bottom);
     }
+    dragViewHeight = dragView.getHeight();
+    secondViewHeight = secondView.getHeight();
+    ViewCompat.setPivotX(dragView, dragView.getWidth()/2);
+    scaleX = (double) screenHeight / dragView.getWidth();
+    scaleY = (double) screenWidth / dragViewHeight;
   }
 
   /**
@@ -427,6 +546,23 @@ public class DraggableView extends RelativeLayout {
       attributes.recycle();
       initializeViewDragHelper();
     }
+  }
+
+  /**
+   * Initialize secondViewSpring  callback when this view is attached
+   */
+  @Override protected void onAttachedToWindow() {
+    super.onAttachedToWindow();
+    dragViewSpring().removeAllListeners().addListener(dragViewSpringListener);
+    secondViewSpring().removeAllListeners().addListener(secondViewSpringListener);
+    zoomSpring().removeAllListeners().addListener(zoomSpringListener);
+  }
+
+  @Override protected void onDetachedFromWindow() {
+    dragViewSpring().removeAllListeners();
+    secondViewSpring().removeAllListeners();
+    zoomSpring().removeAllListeners();
+    super.onDetachedFromWindow();
   }
 
   private void mapGUI(TypedArray attributes) {
@@ -476,7 +612,7 @@ public class DraggableView extends RelativeLayout {
    * Modify secondView position to be always below dragged view.
    */
   void changeSecondViewPosition() {
-    ViewHelper.setY(secondView, dragView.getBottom());
+    ViewCompat.setY(secondView, dragView.getBottom());
   }
 
   /**
@@ -502,7 +638,7 @@ public class DraggableView extends RelativeLayout {
    * Modify the second view alpha based on dragged view vertical position.
    */
   void changeSecondViewAlpha() {
-    ViewHelper.setAlpha(secondView, 1 - getVerticalDragOffset());
+    ViewCompat.setAlpha(secondView, 1 - getVerticalDragOffset());
   }
 
   /**
@@ -515,7 +651,7 @@ public class DraggableView extends RelativeLayout {
       if (alpha == 0) {
         alpha = 1;
       }
-      ViewHelper.setAlpha(dragView, alpha);
+      ViewCompat.setAlpha(dragView, alpha);
     }
   }
 
@@ -523,8 +659,8 @@ public class DraggableView extends RelativeLayout {
    * Restore view alpha to 1
    */
   void restoreAlpha() {
-    if (enableHorizontalAlphaEffect && ViewHelper.getAlpha(dragView) < 1) {
-      ViewHelper.setAlpha(dragView, 1);
+    if (enableHorizontalAlphaEffect && ViewCompat.getAlpha(dragView) < 1) {
+      ViewCompat.setAlpha(dragView, 1);
     }
   }
 
@@ -761,4 +897,78 @@ public class DraggableView extends RelativeLayout {
   public int getDraggedViewHeightPlusMarginTop() {
     return transformer.getMinHeightPlusMargin();
   }
+
+  private SimpleSpringListener dragViewSpringListener = new SimpleSpringListener() {
+    @Override public void onSpringUpdate(Spring spring) {
+      super.onSpringUpdate(spring);
+      float translation = (float) SpringUtil.mapValueFromRangeToRange(spring.getCurrentValue(), 0,
+          1, 0, (screenHeight/2) - (dragViewHeight/2));
+      float rotate = (float) SpringUtil.mapValueFromRangeToRange(spring.getCurrentValue(), 0,
+          1, 0, 90);
+      ViewCompat.setTranslationY(dragView, translation);
+      ViewCompat.setRotation(dragView, rotate);
+    }
+  };
+
+  private SimpleSpringListener secondViewSpringListener = new SimpleSpringListener() {
+    @Override public void onSpringUpdate(Spring spring) {
+      super.onSpringUpdate(spring);
+      float translation = (float) SpringUtil.mapValueFromRangeToRange(spring.getCurrentValue(), 0,
+          1, 0, secondViewHeight + 100);
+      ViewCompat.setTranslationY(secondView, translation);
+    }
+  };
+
+  private SimpleSpringListener zoomSpringListener = new SimpleSpringListener() {
+    @Override public void onSpringUpdate(Spring spring) {
+      super.onSpringUpdate(spring);
+
+      float scaleXValue = (float) SpringUtil.mapValueFromRangeToRange(spring.getCurrentValue(), 0,
+          1, 1, scaleX);
+      float scaleYValue = (float) SpringUtil.mapValueFromRangeToRange(spring.getCurrentValue(), 0,
+          1, 1, scaleY);
+      ViewCompat.setScaleX(dragView, scaleXValue);
+      ViewCompat.setScaleY(dragView, scaleYValue);
+    }
+  };
+
+  public Spring dragViewSpring() {
+    if (dragViewSpring == null) {
+      synchronized (Spring.class) {
+        if (dragViewSpring == null) {
+          dragViewSpring = SpringSystem.create()
+              .createSpring()
+              .setSpringConfig(SpringConfig.fromOrigamiTensionAndFriction(tension, friction));
+        }
+      }
+    }
+    return dragViewSpring;
+  }
+
+  public Spring secondViewSpring() {
+    if (secondViewSpring == null) {
+      synchronized (Spring.class) {
+        if (secondViewSpring == null) {
+          secondViewSpring = SpringSystem.create()
+              .createSpring()
+              .setSpringConfig(SpringConfig.fromOrigamiTensionAndFriction(tension, friction));
+        }
+      }
+    }
+    return secondViewSpring;
+  }
+
+  public Spring zoomSpring() {
+    if (zoomSpring == null) {
+      synchronized (Spring.class) {
+        if (zoomSpring == null) {
+          zoomSpring = SpringSystem.create()
+              .createSpring()
+              .setSpringConfig(SpringConfig.fromOrigamiTensionAndFriction(tension, friction));
+        }
+      }
+    }
+    return zoomSpring;
+  }
+
 }
