@@ -15,8 +15,8 @@
  */
 package com.github.pedrovgs.transformer;
 
+import android.support.v4.view.ViewCompat;
 import android.view.View;
-import com.nineoldandroids.view.ViewHelper;
 
 /**
  * Transformer extension created to scale the view instead of resize it as the other
@@ -25,9 +25,9 @@ import com.nineoldandroids.view.ViewHelper;
  *
  * @author Pedro Vicente Gómez Sánchez
  */
-class ScaleTransformer extends Transformer {
+public class ScaleTransformer extends Transformer {
 
-  ScaleTransformer(View view, View parent) {
+  public ScaleTransformer(View view, View parent) {
     super(view, parent);
   }
 
@@ -37,8 +37,8 @@ class ScaleTransformer extends Transformer {
    * @param verticalDragOffset used to calculate the new scale.
    */
   @Override public void updateScale(float verticalDragOffset) {
-    ViewHelper.setScaleX(getView(), 1 - verticalDragOffset / getXScaleFactor());
-    ViewHelper.setScaleY(getView(), 1 - verticalDragOffset / getYScaleFactor());
+    ViewCompat.setScaleX(getView(), 1 - verticalDragOffset / getXScaleFactor());
+    ViewCompat.setScaleY(getView(), 1 - verticalDragOffset / getYScaleFactor());
   }
 
   /**
@@ -47,8 +47,8 @@ class ScaleTransformer extends Transformer {
    * @param verticalDragOffset used to calculate the new position.
    */
   @Override public void updatePosition(float verticalDragOffset) {
-    ViewHelper.setPivotX(getView(), getView().getWidth() - getMarginRight());
-    ViewHelper.setPivotY(getView(), getView().getHeight() - getMarginBottom());
+    ViewCompat.setPivotX(getView(), getView().getWidth() - getMarginRight());
+    ViewCompat.setPivotY(getView(), getView().getHeight() - getMarginBottom());
   }
 
   /**

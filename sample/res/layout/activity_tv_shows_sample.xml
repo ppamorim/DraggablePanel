@@ -46,6 +46,8 @@
         android:layout_width="fill_parent"
         android:layout_height="@dimen/tv_show_fan_art_height"
         android:layout_alignParentTop="true"
+        android:clickable="true"
+        android:focusable="true"
         style="@style/image_view"/>
 
   </com.github.pedrovgs.DraggableView>

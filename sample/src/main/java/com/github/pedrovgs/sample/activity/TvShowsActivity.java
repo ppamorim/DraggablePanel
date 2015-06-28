@@ -75,11 +75,20 @@ public class TvShowsActivity extends DIFragmentActivity {
     hookListeners();
   }
 
+  @Override public void onBackPressed() {
+    if(draggableView.isFullScreen()) {
+      draggableView.toggleFullScreen();
+    } else {
+      super.onBackPressed();
+    }
+  }
+
   /**
    * Method triggered when the iv_fan_art widget is clicked. This method shows a toast with the tv
    * show selected.
    */
   @OnClick(R.id.iv_fan_art) void onFanArtClicked() {
+    draggableView.toggleFullScreen();
     Toast.makeText(this, tvShowSelected.getTitle(), Toast.LENGTH_LONG).show();
   }
 

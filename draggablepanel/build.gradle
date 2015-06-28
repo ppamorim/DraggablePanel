@@ -2,8 +2,8 @@ apply plugin: 'com.android.library'
 apply plugin: 'checkstyle'
 
 dependencies {
-    compile 'com.android.support:support-v4:20.0.0'
-  compile 'com.nineoldandroids:library:2.4.0'
+  compile 'com.android.support:support-v4:22.2.0'
+  compile 'com.facebook.rebound:rebound:0.3.8'
 }
 
 android {
@@ -31,7 +31,6 @@ android {
 }
 
 apply from: 'https://raw.github.com/jpardogo/gradle-mvn-push/master/gradle-mvn-push.gradle'
-
 
 task checkstyle(type: Checkstyle) {
   configFile file('../config/checkstyle/checkstyle.xml')

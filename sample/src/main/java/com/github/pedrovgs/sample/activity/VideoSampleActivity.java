@@ -63,12 +63,20 @@ public class VideoSampleActivity extends FragmentActivity {
     hookDraggableViewListener();
   }
 
+  @Override public void onBackPressed() {
+    if(draggableView.isFullScreen()) {
+      draggableView.toggleFullScreen();
+    } else {
+      super.onBackPressed();
+    }
+  }
+
   /**
    * Method triggered when the iv_thumbnail widget is clicked. This method shows a toast with the
    * video title.
    */
   @OnClick(R.id.iv_thumbnail) void onThubmnailClicked() {
-    Toast.makeText(this, VIDEO_TITLE, Toast.LENGTH_SHORT).show();
+    draggableView.toggleFullScreen();
   }
 
   /**
